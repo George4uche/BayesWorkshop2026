@@ -1,0 +1,72 @@
+---
+title: "LearnRSolutions"
+author: "Sarah Manski"
+date: "`r Sys.Date()`"
+output: html_document
+---
+With updates by Katherine Muller, October 2025
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r ex1b}
+# Step 1: Load required packages
+library(agridat)
+library(tidyverse)
+
+# Step 2: Load required data and view its documentation
+data(ilri.sheep)
+?ilri.sheep
+
+# Step 3: Copy the ilri.sheep data into a new object called sheep
+sheep <- ilri.sheep
+
+# Step 4: Filter data to only include male lambs with a recorded wean age
+maleSheep <- sheep %>% filter(sex == "M" & !is.na(weanage)) 
+
+# Step 5: Group data by year and ewe genotype
+sheepSummary <- maleSheep %>% group_by(year, gen) %>%
+# Step 6: Summarize data by calculating standard deviation and median for both wean age and dam age as well as maximum dam age
+  summarize(sd_weanage = sd(weanage), 
+            sd_damage = sd(damage),
+            median_weanage = median(weanage), 
+            median_damage = median(damage), 
+            max_damage = max(damage))
+
+
+# Step 7: Inspect the summarized data
+## There are multiple options, including:
+head(sheepSummary)
+summary(sheepSummary)
+View(sheepSummary)
+
+# Step 8: Clear one or more objects from your working environment
+# you can remove specific objects
+rm(sheep, maleSheep, ilri.sheep)
+# or everything at once:
+rm(list=ls())
+# Or click the little broom icon in the 'Enviroment' tab in RStudio.
+
+```
+
+```{r ex2b, warning = FALSE}
+# Step 1: Load required packages
+library(agridat)
+library(tidyverse)
+
+# Step 2: Load required data and save
+data(ilri.sheep)
+sheep <- ilri.sheep
+
+# Step 3: Call ggplot with sheep data
+ggplot(data = sheep) + 
+  # Step 4: Create a scatter plot with birth weight for x axis, wean weight for y axis, shape for sex and alpha for wean age
+  geom_point(aes(x = birthwt, y=weanwt, shape = sex, alpha = weanage, )) + 
+  # Step 5: Include descriptive labels
+  labs(x = "Lamb birth weight", y = "Lamb weaning weight", title = "Lamb birth and weaning and weight by genotype") +
+  # Step 6: Split plot by lamb genotype
+  facet_wrap(~gen)
+```

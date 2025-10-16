@@ -1,0 +1,45 @@
+---
+title: "Error Solutions"
+author: "Sarah Manski"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r packages}
+#Load required packages
+library(tidyverse)
+library(agridat) 
+```
+
+## Exercise 1
+
+
+```{r ex1}
+# Here is the code chunk for exercise 1 without errors
+
+data(ilri.sheep)
+sheep <- ilri.sheep
+sheep94 <- sheep %>% 
+  filter(year == 94, !is.na(weanwt)) %>%
+  mutate(wtchange = weanwt - birthwt)%>%
+  group_by(gen) %>% 
+  summarize(mean_birthwt = mean(birthwt),
+      mean_weanwt = mean(weanwt), mean_wtchange = mean(wtchange), n= n())
+head(sheep94)
+```
+
+## Exercise 2
+
+```{r ex2, warning = FALSE}
+# Here is the Exercise 2 code without errors.
+data(ilri.sheep)
+sheep <- ilri.sheep
+ggplot(data = sheep) + geom_point(aes(x = weanage, y=weanwt, color = gen, shape = sex)) +  
+  labs(x = "Lamb weaning age", y = "Lamb weaning weight", title = "Lamb weaning age and weight by genotype and sex")
+
+```
+
