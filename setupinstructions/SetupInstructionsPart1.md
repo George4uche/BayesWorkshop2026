@@ -1,9 +1,3 @@
----
-output:
-  word_document: default
-  html_document: default
-  pdf_document: default
----
 # Set up instructions Part I: Software and configurations
 ## Overview
 

@@ -1,8 +1,3 @@
----
-output:
-  word_document: default
-  html_document: default
----
 # Set up instructions Part II: Packages for Bayesian data analysis
 
 ## Overview
