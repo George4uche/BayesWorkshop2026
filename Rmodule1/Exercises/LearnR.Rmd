@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Exercise 1: Data manipulation and summary with dplyr
 
-In this exercise, you are given an example of data manipulation using the tidyverse package dplyr.  In part (a), use strategic searching tips to find out what the code does and write out the steps in the code comments.  In part (b), you use the code from part (a) to solve a similar data manipulation task.
+In this exercise, you are given an example of data manipulation using the *tidyverse* package *dplyr*.  In part (a), you use strategic searching tips to find out what the code does and write out the steps in the code comments.  In part (b), you use the code from part (a) to solve a similar data manipulation task.
 
 
 ### 1a) Learning by example
@@ -55,7 +55,7 @@ rm(sheep, sheep94, ilri.sheep)
 Suppose now you are given the following task, which requires similar data manipulation as the example in part (a).
 
 
-Task: Using the functions from the tidyverse package dplyr and the dataset ilri.sheep from the agridat package, complete the following. For all male lambs with a recorded wean age, calculate the standard deviation and median wean age and ewe (dam) age and the maximum ewe (dam) age for each year and ewe genotype.  
+Task: Using the functions from the *tidyverse* package *dplyr* and the dataset ilri.sheep from the *agridat* package, complete the following. For all male lambs with a recorded wean age, calculate the standard deviation and median wean age and ewe (dam) age and the maximum ewe (dam) age for each year and ewe genotype.  
 
 
 Use the sample code from 1a and the steps written in the code chunk below to complete the above task. 
@@ -83,7 +83,7 @@ Use the sample code from 1a and the steps written in the code chunk below to com
 
 ## Exercise 2: Plotting with ggplot2
 
-In this exercise, you are given an example of plot creation using the tidyverse package ggplot2.  In part (a), use strategic searching tips to find out what the code does and write out the steps in the code comments.  In part (b), you use the code from part (a) to solve a similar data plotting task.
+In this exercise, you are given an example of plot creation using the *tidyverse* package *ggplot2*.  In part (a), you use strategic searching tips to find out what the code does and write out the steps in the code comments.  In part (b), you use the code from part (a) to solve a similar data plotting task.
 
 
 ### 2a) Learning by example
@@ -114,7 +114,7 @@ ggplot(data = sheep) +
 Suppose now you are given the following task, which requires similar data plotting as the example in part (a).
 
 
-Task: Use the functions from the tidyverse package ggplot2 and the dataset ilri.sheep from the agridat package. Create scatter plots of birth weight vs wean weight grouped by lamb genotype, with appropriate axis labels and title, and where the shape of the points corresponds to the lamb sex and the opacity (alpha) of the points corresponds to lamb wean age.
+Task: Use the functions from the *tidyverse* package *ggplot2* and the dataset ilri.sheep from the *agridat* package. Create scatter plots of birth weight vs wean weight grouped by lamb genotype, with appropriate axis labels and title, and where the shape of the points corresponds to the lamb sex and the opacity (alpha) of the points corresponds to lamb wean age.
 
 
 Use the sample code from 2a and the steps written in the code chunk below to complete the above task. 

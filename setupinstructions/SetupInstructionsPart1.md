@@ -11,16 +11,16 @@ All of the software and online tools for this workshop are free to use. Several 
 
 ### Necessary tools:
 
-**R** is a free, open-source language and software environment that is widely used for data analysis https://www.r-project.org/. 
+**R** is a free, open-source language and software environment that is widely used for data analysis (https://www.r-project.org/). 
 **RStudio** is an integrated development environment (IDE) developed by Posit that provides a lot of useful tools for working with R. 
 
-**RStudio Desktop** (https://posit.co/download/rstudio-desktop/) is a software application for Rstudio that you download and install on your computer. It is also free and open-source, though there is a paid version available from Posit (not needed). R and R studio are separate pieces of software that interact with each other. RStudio can be used as an IDE for other software environments, such as Python. Conversely, there are other software applications that can be used as an IDE for R, such as Microsoft Visual Studio. Generally, RStudio is the preferred IDE for R, and the one we will use for this workshop. 
+**RStudio Desktop** (https://posit.co/download/rstudio-desktop/) is a software application for Rstudio that you download and install on your computer. It is also free and open-source, though there is a paid version available from Posit (**only the free version is required for this workshop**). R and R studio are separate pieces of software that interact with each other. RStudio can be used as an IDE for other software environments, such as Python. Conversely, there are other software applications that can be used as an IDE for R, such as Microsoft Visual Studio. Generally, RStudio is the preferred IDE for R, and the one we will use for this workshop. 
 
-**C++ toolchain**: Some of the tools you will use for Bayesian data analysis require extra software to compile code written in C++ or Fortran. If you are using Windows, you will need to install **Rtools** https://cran.r-project.org/bin/windows/Rtools/. Mac users will need to install Xcode and a GNU Fortran compiler (see: https://mac.r-project.org/tools/).  
+**C++ toolchain**: Some of the tools you will use for Bayesian data analysis require extra software to compile code written in C++ or Fortran. If you are using Windows, you will need to install **Rtools** (https://cran.r-project.org/bin/windows/Rtools/). Mac users will need to install Xcode and a GNU Fortran compiler (see: https://mac.r-project.org/tools/).  
 
 **Git** (https://git-scm.com/) is a version control system that tracks files and manages changes with multiple collaborators. It is a free, open-source software that you install on your computer.
 
-**GitHub** (https://github.com/) is a cloud-based collaborative platform that stores code and helps manage projects with multiple collaborators. Code is stored in a folder called a repository. GitHub works with the Git software on your computer so you can work on files locally and sync your changes to the remote repository on GitHub. To use GitHub, you must create a user account using an email address. GitHub offers free and paid plans for individuals and organizations. The free plan includes unlimited private and public repositories and is sufficient for most users. Github also offers extensive documentation via https://docs.github.com and AI coding assistance through Github Copilot (limited for the free plan).
+**GitHub** (https://github.com/) is a cloud-based collaborative platform that stores code and helps manage projects with multiple collaborators. Code is stored in a folder called a repository. GitHub works with the Git software on your computer so you can work on files locally and sync your changes to the remote repository on GitHub. To use GitHub, you must create a user account using an email address. GitHub offers free and paid plans for individuals and organizations. The free plan includes unlimited private and public repositories and is sufficient for for this workshop. Github also offers extensive documentation via https://docs.github.com and AI coding assistance through Github Copilot (limited for the free plan).
 
 ### Optional tools:
 
@@ -39,11 +39,11 @@ At the top of the page, select the Download link for your system (Windows, macOS
 
 --------------------
 
-2.	Install the most recent release of **RStudio Desktop**: https://posit.co/download/rstudio-desktop/. This also involves downloading and running an installer program.
+2.	Install the most recent release of **RStudio Desktop** from https://posit.co/download/rstudio-desktop/. This also involves downloading and running an installer program.
 
 ---------------
 
-3. Install a **C++ toolchain.** (https://mc-stan.org/install/#prerequisite-c17-toolchain) 
+3. Install a **C++ toolchain** (https://mc-stan.org/install/#prerequisite-c17-toolchain) 
 
 ### Windows: Install **Rtools**
 
@@ -51,12 +51,14 @@ Visit https://cran.r-project.org/bin/windows/Rtools/. Select RTools 4.5, select 
 
 ### MacOS:
 
-Mac Users should install Xtools and a GNU Fortran compiler, available from here: https://mac.r-project.org/tools/.  
+Mac Users should install Xtools and a GNU Fortran compiler, available here: https://mac.r-project.org/tools/.  
 
 
 ### Linux:
 
 Run the command `sudo apt-get install build-essential`.
+
+--------------------
 
 4. If you don't have one already, **create a GitHub account** at https://github.com/. See here for detailed instructions: https://docs.github.com/en/get-started/start-your-journey/creating-an-account-on-github.  
 
@@ -79,7 +81,7 @@ git config --global user.name yourusername
 git config --global user.email your@email.com 
 ```
 
-, replacing *yourusername* and *your@email.com* with the username and email you used for your GitHub account. 
+Replace *yourusername* and *your@email.com* with the username and email you used for your GitHub account. 
 
 ----------------------
 
@@ -96,15 +98,15 @@ Then, select Environment Variables.
  
  ![Environment Variables](setupimages/environmentVariablesScreenshot1.png)
  
-Under System variables, scroll down to Variable called "Path". Click on it and push push the "Edit" button.
+Under System variables, scroll down to the Variable called "Path". Select it and push the "Edit" button.
 
  ![System Variables](setupimages/pathEditScreenshot.png)
 
-Add the path of the bin folder within Git to the Path variable (e.g., `C:\Program Files\Git\bin`). In Windows 11, this can be done by clicking 'New' within the editing window and typing in the path to the bin folder (see below). In older versions of Windows, you may need to edit the variable by adding `;` followed by the path to the bin folder.  
+Add the file path of the bin folder within Git to the Path variable (e.g., `C:\Program Files\Git\bin`). In Windows 11, this can be done by clicking 'New' within the editing window and typing in the path to the bin folder (see below). In older versions of Windows, you may need to edit the variable by adding `;` followed by the path to the bin folder.  
 
  ![System Variables](setupimages/gitbinScreenshot.png)
 
-The `Git\cmd` folder should already be included here. If it is not, you should add it as well.
+The `Git\cmd` folder should already be included here. If it is not, you should add it as well following the above steps.
  
 
 
@@ -130,11 +132,11 @@ The R version at the top should be the one you most recently installed (i.e., 4.
 
 2. Set up version control.
 
-This page shows instructions for different operating systems: https://r-bio.github.io/git-installation/. Once you have gone through the steps of linking your Github account and adding Git as a Windows Path variable (above), you can follow these instructions to set up Git and GitHub within R Studio.
+This page shows instructions for different operating systems: https://r-bio.github.io/git-installation/. Once you have gone through the steps of linking your Github account and adding Git as a Windows Path variable (above), you can follow these instructions to set up Git and GitHub within R Studio:
  https://docs.posit.co/ide/user/ide/guide/tools/version-control.html
 
 
-Open RStudio Desktop. In the toolbar, click Tools, Global Options, and then Git/SVN in the side bar. Click Enable Version control interface for RStudio projects. The Git executable should give the location of the git.exe file on your computer. If it does not, you can browse to find it. 
+Open RStudio Desktop. In the toolbar, click Tools, Global Options, and then Git/SVN in the side bar. Click the 'Enable Version control interface for RStudio projects' checkbox. The Git executable box should give the location of the git.exe file on your computer. If it does not, you can browse to find it. 
 
 ![Global Settings](setupimages/GitOptionsRStudioScreenshot.png)
 
@@ -149,13 +151,13 @@ R is inherently modular. Its functionality comes from packages developed contrib
 
 To see where R saves packages, open Rstudio, type `.libPaths()` in the console window, and press enter.
 
-*This stuff may seem overwhelming at first, but it is much easier to take care of while you set your system up for the first time.*
+*These steps may seem overwhelming at first, but it is much easier to take care of these details when you set up your system for the first time.*
 
 ![.libPaths](setupimages/libPathsScreenshot.png)
 
 The output shows two paths. The first path the default location where R will install new packages. On my clean install on Windows 11 using R v. 4.5.1, R automatically created a user package library in my User profile  `C:/Users/kathe/AppData/Local/R/win-library/4.5`. That means, if I install a new package, it will only show up on my user account, and not for other users on the same computer. 
 
-The second path is the system package library `C:/Program Files/R/R-4.5.1/library`. This folder contains the built-in packages that come with the R software. Any packages installed here will be available for all users on your computer. However, it is generally best practice to user a separate, user package library, which is the default in R 4.5.1. 
+The second path is the system package library `C:/Program Files/R/R-4.5.1/library`. This folder contains the built-in packages that come with the R software. Any packages installed here will be available for all users on your computer. However, it is generally best practice to use a separate, user package library, which is the default in R 4.5.1. 
 
 While it is fine to keep the defaults, it can be useful to change where R reads and installs packages. For example, I like to set up my user package library in my Microsoft One Drive folder so it automatically backs up to the cloud.
 

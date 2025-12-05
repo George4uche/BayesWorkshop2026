@@ -5,7 +5,7 @@ date: "April 2023"
 output: html_document
 ---
 
-*Updated by Katherine Muller, October 2025*
+With updates by Katherine Muller, October 2025
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -18,7 +18,7 @@ Before you start, use Session -> Restart R and Clear Output and Session -> Clear
 library(tidyverse)
 library(agridat)
 ```
-Below are many nearly identical code chunks, all containing some error.  Can you troubleshoot these errors? When you think you've done it, remove "eval = FALSE" from the code chunk and try to knit.
+Below are many nearly identical code chunks, all containing some error.  Can you troubleshoot these errors? When you think you've done it, remove "eval = FALSE" from the code chunk and try to run.
 
 
 ## Exercise 1
@@ -108,7 +108,7 @@ head(sheep94)
 ### Challenge me!
 Exercise for Meeting 1.
 
-The code chunk below has no errors... yet! Edit the below chunk to contain some errors. Then when prompted, send me your error-filled code and I'll try to troubleshoot it!
+The code chunk below has no errors...*yet*! Edit the below chunk to contain some errors. Then when prompted, send me your error-filled code and I'll try to troubleshoot it!
 
 ```{r ex1 challenge, eval = FALSE}
 data(ilri.sheep)
@@ -196,7 +196,7 @@ ggplot(data = sheep) + geom_point(aes(x = weanage, y=weanwt, color = gen, shape 
 ### Challenge me!
 Exercise for Meeting 1.
 
-The code chunk below has no errors... yet! Edit the below chunk to contain some errors. Then when prompted, send me your error-filled code and I'll try to troubleshoot it!
+The code chunk below has no errors...*yet*! Edit the below chunk to contain some errors. Then when prompted, send me your error-filled code and I'll try to troubleshoot it!
 
 ```{r ex2 challenge, eval = FALSE}
 data(ilri.sheep)

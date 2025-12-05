@@ -1,56 +1,37 @@
-# BayesWorkshop2026
+![SLC logo](images/SLClogo.jpg)
+https://www.sustainabilitylakechad.com/
+
+<h1><span style = "color:green">Bayesian statistics in Sustainability Science with a focus on Agrarian Societies and Ecosystem Services in the Lake Chad Basin</span></h1>
 This respository is for shared materials for the 2026 Bayesian statistics workshop in Abuja, Nigeria. Workshop participants should fork this repository to their github user accounts.
 
-## Before the workshop:
 
+## Workshop Description
 
------
+The workshop will consist of **five in-person days from January 12 to 16, 2026**, and approx. **10 hours of online preparatory material** prior to the in-person workshop in Abuja. All activities use free, open-access tools. 
 
-### 1. Set up your system.
+## Broad learning objectives
 
-| Task | Materials |
-|------| ---------|
-| 1. Install and configure software.|  [Setup Instructions Part 1](setupinstructions/SetupInstructionsPart1.md)
-| 2. Install R packages for Bayesian data analysis | [Setup Intructions Part 2](setupinstructions/SetupInstructionsPart2.md)|
-| 3. Set up an R Project with a GitHub repository | [Setup Instructions Part 3](setupinstructions/SetupInstructionsPart3.md)
+I. Participants will gain **confidence** and a set of **tools** for continued **self-directed learning** in computational skills and data analysis.
+II. Participants will develop an **intuitive understanding** of Bayesian data analysis and its **applicability to real-world scenarios**.
+III. Participants will **implement a Bayesian data analysis** workflow with a real dataset from the SLC project.
 
-### 2. Learn some R fundamentals. [Rmodule1](Rmodule1)
+## Pre-workshop materials
+<h3><span style = "color:green"> All pre-workshop materials can be accessed from our interactive course page.</span> </h3>
 
-|Task| Materials |
-|----| ----------|
-| 1. Read *You Can Learn R* by Sam Manski. |[You_Can_Learn_R.pdf](Rmodule1/You_Can_Learn_R.pdf)|
-| 2. Do some practice exercises developed by Sam Manski. *Open each script in R Studio and follow the instructions in the code. Write your answers into the code and commit to your GitHub repository.*. |1. [GettingStarted.R](Rmodule1/Exercises/GettingStarted.R) |
-|  | 2. [LearnR.Rmd](Rmodule1/Exercises/LearnR.Rmd)|
-|  | 3. [Errors.Rmd](Rmodule1/Exercises/Errors.Rmd)|
+https://lakechadproject.github.io/bayes2026-preworkshop-map/ 
 
-#### Additional resources to learn R fundamentals:
-Many of these include practice exercises.
-- R for Gradaute Students (https://bookdown.org/yih_huynh/Guide-to-R-Book/)
-- R for Data Science (https://r4ds.hadley.nz/) 
-- RStudio education page (https://education.rstudio.com/learn/beginner/) 
-- Posit Recipes (https://posit.cloud/learn/recipes)
+The purpose of the pre-workshop materials is to maximize the value of the in-person workshop days. **These materials are freely available to anyone**. By the end of the pre-workshop materials, participants will: 
 
-### 3. Write some R sample code. [Rmodule2](Rmodule2)
+1. Install the necessary software and packages on their computer.
+2. Familiarize themselves with basics of R coding through practice exercises.
+3. Practice a coding and analysis workflow that will serve them during the workshop and beyond.
+4. Familiarize themselves with fundamental concepts and applications of Bayesian data analysis.
 
-A good way to build your R coding skills is to create a portfolio of code that you draw from and adapt for different projects. For this module, you will write a set of R scripts that perform useful analysis tasks. The repository contains two example scripts, [sampleModularScript1.R](Rmodule2/sampleModularScript1.R) and [sampleModularScript2.R](Rmodule2/sampleModularScript2.R), that illustrate how to separate tasks into modular scripts that work together. This good practice for building complex data analysis workflows in R or any other language.   
-
-Come up with at least five R coding tasks that would be useful for your work (feel free to choose from the list below). Save the code into one or more scripts with descriptive names into the Rmodule2 folder (remember to commit and push!). Add comments describing what the code does. Use whatever help resources you like. The [Posit Recipes page](https://posit.cloud/learn/recipes) might be useful.
-
-  
-#### Sample coding tasks:
-
-- Read a CSV data file into your R session and inspect its contents. 
-- Visualize data in a scatterplot.
-- Create a function.
-- Run a function you have created.
-- Create a table by hand.
-- Calculate summary statistics for a table. 
-- Add a column to a table calculated from columns present in the data.
-
-#### Coding tasks with a more Bayesian flavor:
-- Simulate a coin flip.
-- Generate a random sample on a standard normal distribution.
-- Plot a histogram of your random sample.  
+The pre-workshop materials will consist of self-guided activities including readings, videos, and exercises. Students will have two opportunities to meet virtually with instructors in January 2025. The first virtual session will be focused on troubleshooting issues with software installation, R coding, and other computational topics. The second virtual session will be focused on reviewing concepts of Bayesian data analysis. 
  
+Before the in-person session, we will ask participants to complete a survey to assess their learning and evaluate their interests to help sort them into project groups.
 
-  
+## In-person Workshop
+The in-person workshop will give students an opportunity to continue building their computational and analytical skills. All activities of the workshop will be organized around a group project in which they will implement a Bayesian data analysis workflow on a real dataset. 
+
+

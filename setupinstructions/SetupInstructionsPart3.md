@@ -20,7 +20,7 @@ We are using a GitHub repository for the workshop materials because Git/GitHub a
 
 ## Components:
 
-- **RStudio Project**: A project is a tool within RStudio that is used to organize scripts and data. In RStudio Desktop, a project corresponds to a folder on your local hard drive that houses all files pertaining to a particular project. The project folder contains a file ending in .Rproj (e.g., myproject.Rproj). When you open the .Rproj file in RStudio, the R session automatically sets the project folder as the working directory, which is where R looks to load and save files. The .Rproj file also remembers which script windows were open last time you exited, and any settings you modified. RStudio projects can be used on their own or with GitHub. We will be doing the latter.
+- **RStudio Project**: A project is a tool within RStudio that is used to organize scripts and data. In RStudio Desktop, a project corresponds to a folder on your local hard drive that houses all files pertaining to a particular project. The project folder contains a file ending in .Rproj (e.g., myproject.Rproj). When you open the .Rproj file in RStudio, the R session automatically sets the project folder as the working directory, which is where R will load and save files for the project. The .Rproj file also remembers which script windows were open last time you exited, and any settings you modified. RStudio projects can be used on their own or with GitHub. We will be doing the latter.
     
 - **Local repository**: This is a folder on your local machine that the Git software tracks. Similar to the RStudio project, the Git functionality comes from a set of files saved in this folder. As you modify and save files in the local repository, you make "commits" to Git with some comment about what you've changed (e.g., "created a readme file", "fixed an error", etc.). Git keeps track of every file in the repository and logs everything everything that has changed between commits. You can tell Git to ignore certain files and file types by listing them in a file called .gitignore (more on that later). 
     
@@ -35,9 +35,9 @@ Here is a diagram summarizing the workflow with RStudio Projects, Git, and Githu
 Definitions copied and from here:
  https://docs.github.com/en/get-started/learning-about-github/github-glossary
 
-- **Clone**: A clone is a copy of a repository that lives on your computer instead of on a website's server somewhere, or the act of making that copy. When you make a clone, you can edit the files in your preferred editor and use Git to keep track of your changes without having to be online. The repository you cloned is still connected to the remote version so that you can push your local changes to the remote to keep them synced when you're online. 
+- **Clone**: A clone is a copy of a repository that lives on your computer instead of on a website's server. When you make a clone, you can edit the files in your preferred editor and use Git to keep track of your changes without having to be online. The repository you cloned is still connected to the remote version so that you can push your local changes to the remote to keep them synced when you're online. 
 
-- **Branch**: A branch is a parallel version of a repository. It is contained within the repository, but does not affect the primary or main branch allowing you to work freely without disrupting the "live" version. When you've made the changes you want to make, you can merge your branch back into the main branch to publish your changes. *This is more useful when you are working on a software application like an R package. A lot of entry level research coders do everything on the 'main' or 'master' branch. The RStudio Git menu has tools to create and switch branches, but it is important to pay careful attention before making and pushing commits!* 
+- **Branch**: A branch is a parallel version of a repository. It is contained within the repository, but does not affect the primary or main branch, allowing you to work freely without disrupting the "live" version. When you've made the changes you want to make, you can merge your branch back into the main branch to publish your changes. *This is more useful when you are working on a software application like an R package. A lot of entry level research coders do everything on the 'main' or 'master' branch. The RStudio Git menu has tools to create and switch branches, but it is important to pay careful attention before making and pushing commits!* 
 
 - **Fork**: A fork is a personal copy of another user's repository that lives on your account. Forks allow you to freely make changes to a project without affecting the original upstream repository. You can also open a pull request in the upstream repository and keep your fork synced with the latest changes since both repositories are still connected. *A fork is similar to a branch, except that it's a new repository. Branches must eventually be merged or deleted. Forks can merge with the original upstream repository, but can also go in a totally different direction.*
 
@@ -59,28 +59,35 @@ We created a repository on github to organize workshop materials (https://github
 
 ### Fork the workshop repository
 
-1. Log into github.com and navigate to  https://github.com/lakechadproject/BayesWorkshop2026   
-Fork Bayesworkshop. See below for some notes on the GitHub workflow.
-2.	Click on the Fork icon in the upper right corner. ![Fork Icon](setupimages/ForkIcon.png)
+1. Log into github.com and navigate to  https://github.com/lakechadproject/BayesWorkshop2026   See below for some notes on the GitHub workflow. 
+
+----------------------
+2.	Fork BayesWorkshop2026. Click on the ![Fork Icon](setupimages/ForkIcon.png)in the upper right corner. 
+
+
 	  
-3. Click “Create new fork”. The Owner should be your user account. By default, the repository name is the same as the repository you are copying. There two buttons on the home page of the repository. “Sync fork” pulls any changes from the original repository. “Contribute” allows you to contribute changes to the original repository. **Note: for simplicity, we are going to keep all forking operations within GitHub webpage.**
+----------------------
+3. Click “Create new fork”. The "Owner" should be your user account. By default, the repository name is the same as the repository you are copying. There two buttons on the home page of the repository. “Sync fork” pulls any changes from the original repository. “Contribute” allows you to contribute changes to the original repository. **Note: for simplicity, we are going to keep all forking operations within GitHub webpage.**
 
 ### Set up an RStudio project
 
-3. Open RStudio. On the top menu, select File then New Project.
-4. Select Version Control from the Create Project Wizard. Then select Git.
-5. Enter the URL for your forked repository. 
+4. Open RStudio. On the top menu bar, select File then New Project.
+----------------------
+5. Select Version Control from the Create Project Wizard window. Then select Git.
+----------------------
+6. Enter the URL for your forked repository. 
 Because you forked the repository, the url on your system should be https://github.com/YOURUSERNAME/BayesWorkshop2026. You can also log into GitHub, navigate to the repository, and copy the link from your browser. By default, the project directory name matches the repository name. 
 
-
-6. Click "Browse" to select where you want the project directory to be saved on your computer. The default is the Home directory on your system (usually your user account Documents folder).
+----------------------
+7. Click "Browse" to select where you want the project directory to be saved on your computer. The default is the Home directory on your system (usually your user account Documents folder).
 
 
 ![R Project Git Setup](setupimages/RStudioGithubSetupScreenshot.png)
 
-
-7. Click "Create Project." Follow the prompts to log into GitHub to authorize. 
-8. Close the browser and open your project in RStudio. There should be now be a "Git" toolbar in the upper right side of your RStudio window. If you click on this toolbar, you should see a list of all the changes that have been made since your last "commit". 
+----------------------
+8. Click "Create Project." Follow the prompts to log into GitHub to authorize. 
+----------------------
+9. Close the browser and open your project in RStudio. There should be now be a "Git" toolbar in the upper right side of your RStudio window. If you click on this toolbar, you should see a list of all the changes that have been made since your last "commit". 
 ![RStudio Git Toolbar](setupimages/RStudioGitWindow1.png)
 
 -----------------------------
@@ -90,7 +97,7 @@ Because you forked the repository, the url on your system should be https://gith
 
 With group repositories, your Git workflow in RStudio should always be **pull, commit, push**. It's always a good idea to pull changes from the remote repository every time you open your RStudio project.
 
-9. **Make your first commit!** 
+10. **Make your first commit!** 
 Likely, your Git window will show two files that RStudio created when you initiated the project directory. One is the `{PROJECTNAME}.Rproj` file, which tells RStudio that this directory is an R Project. The other is the `.gitignore` file, which tells Git which files to ignore when you make commits. Click on the .gitignore file in your Files pane to open it in the RStudio editor. You will notice that the .gitignore file already contains a few items. These are accessory files that work behind the scienes of an RStudio project and have no use outside of your file system.
 
 ![.gitignore](setupimages/GitIgnoreScreenshot1.png)
@@ -105,7 +112,7 @@ Check all the files you want to include in the commit (in this case, all of them
 
 -----------------
 
-10. Modify your .gitignore file.
+11. Modify your .gitignore file.
 
 It can be useful to tell Git to ignore specific files or file types. For example, you might have files with private information you do not want to share publicly, or you may want to ignore large binary files that take up a lot of space and are not useful to track on Github.
 
@@ -117,6 +124,6 @@ This opens your .gitIgnore file in a new window and gives you the option to save
 
 You can also edit the .gitignore file through the RStudio editor. In addition to listing specific files, Git can ignore files based on a pattern. For example, adding `*.docx` to my .gitignore tells git to ignore all Microsoft Word documents (the `*` means anything before the file extension .docx). 
 
-After you modify your .gitignore file, you will need to commit your changes to your local repository and push them to the remote repository, as you did in step 9. 
+After you modify your .gitignore file, you will need to commit your changes to your local repository and push them to the remote repository, as you did in step 10. 
 
   
