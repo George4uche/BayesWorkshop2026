@@ -1,0 +1,437 @@
+---
+title: "Gibbs Sampler"
+author: "Katherine Muller"
+date: "2025-12-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+This example demonstrates fundamental concepts of Bayesian data analysis using simple linear regression between two continuous variables, x and y. While your data analysis work in sustainability science will likely require more complex models, simple linear regression provides a good foundation to connect the theory of Bayesian inference with the practice of Bayesian computation.
+
+While the theory of Bayesian inference has been around since the 18th century, it was a  practical tool for complex data analysis until the advent of modern computers. Computation allows us to approximate theoretical distributions by sampling them. The main type of computer sampling used in Bayesian data analysis is called Markov chain Monte Carlo, or MCMC. This is a type of computer algorithm that samples over many iterations to converge on a theoretical distribution. There are multiple MCMC algorithms that work better for different tasks. In this example, I will demonstrate a particular MCMC algorithm called Gibbs sampling. This algorithm is helpful for learning the intuition of MCMC sampling because it is relatively simple to understand and code.
+
+**The purpose of this Gibbs sampler code is to illustrate the intuition of MCMC sampling and how it extends from the theory of Bayesian inference.** In practice, Bayesian data analysis usually involves more complicated MCMC algorithms built "under the hood" of Bayesian software like Stan. Unless you decide to go into Bayesian software engineering, you probably will not ever need to code an MCMC algorithm by hand.
+
+In addition to helping bridge Bayesian theory and computation, this example illustrates some useful R programming techniques, including:
+
+- Writing function to perform a task
+- Sampling from and visualizing probability distributions
+- Iterative looping
+- Using functions within functions
+
+
+## "Collect" the data
+
+For the sake of this exercise, we will be "collecting" the data by sampling on a distribution with fictional parameters. 
+In this fictional example, x is rainfall and y is rainfed rice yield. The data have been standardized by subtracting the mean (centering around zero) and dividing by sample standard deviation (converting to a common unitless scale). Standardizing data makes it easier to specify models, but you will need to rescale your results if you want to interpret them on the scale of the data (in this case, kg/ha for yield and mm/year for rainfall). We won't be doing that here. 
+
+Here is the code that generates our "observed", standardized data using parameters that are "true" in our fictional scenario. In reality, "true" parameter values are unknowable. Sometimes it can be helpful to use simulated data with fake "true" parameters to test out methods for estimating parameters from data.
+
+### Make a function that "collects" standardized data by sampling a linear regression model with specified parameters. 
+
+This function will be used in the exercises.
+
+```{r collect_data function}
+
+collect_data <- function(
+  N, # sample size
+  beta_0, # true intercept
+  beta_1, # true slope
+  tau,
+  seed = NULL
+) {
+
+  if (!is.null(seed)) set.seed(seed)
+  
+  #x <- as.numeric(scale(rnorm(N, mean = 0, sd = 1),center=TRUE, scale=TRUE))
+  x <- rnorm(N, mean = 0, sd = 1)
+  y <- beta_0 +
+       beta_1 * x +
+       rnorm(N, 0, 1 / sqrt(tau))
+
+  return(
+  list(
+    obsdata = data.frame(xobs = x,
+                         yobs = y),
+    truepars = data.frame(
+      parameter = c("beta_0", "beta_1","tau"),
+      true_value = c(beta_0, beta_1, tau)
+    )
+  )
+  )
+}
+
+```
+
+### Run the function to generate data.
+
+```{r Generate data}
+
+set.seed(20) # initialize the random number generator for reproducible output
+mystudy <- collect_data(N=30, beta_0 = 0, 
+                     beta_1 = 2,
+                     tau = 1)
+
+# the function returns a list of dataframes. These are easier to work with if we assign them to separate objects
+obsdata <- mystudy$obsdata # observed x and y
+truepars <- mystudy$truepars # "true" parameters used to generate the data
+
+
+```
+
+
+## Visualize the data
+
+Here is a plot of our "observed" yield vs. rainfall, expressed as standardized y and x. 
+
+```{r}
+ggplot(obsdata, aes(x = xobs, y = yobs)) + geom_point()
+
+```
+
+## Specify our model.
+
+Based on the plot above, it looks like linear regression is a good way to model the relationship between rainfall (x) and yield (y). It also makes sense as a generative model, since we expect greater water availability through rainfall to increase rainfed rice yield in this hypothetical scenario. 
+
+### Likelihood function:
+
+Data generating function for y given x and parameters.
+
+\[
+p(\mathbf{y} \mid \mathbf{x}, \beta_0, \beta_1, \tau)
+= \prod_{i=1}^{N}
+\mathcal{N}\!\left(
+y_i \mid \beta_0 + \beta_1 x_i,\; \tau^{-1}
+\right)
+\]
+
+### Priors
+These are data generating functions for parameters conditional on known hyperparameters.
+They represent our prior understanding, before observing data. If we don't have strong expectations going in, we set our hyperparameters to support a broad range of plausible values for our parameters of interest. This is often called setting "weak" priors. In other words, the choice of prior distributions and hyperparameters represents what we know about what we don't know, as well as what we know about what we know (let that sink in). Unless there's a good reason to do otherwise, it's also handy to select prior distributions for each parameter that are the same type of distribution as the conditional posterior (i.e. conditionally conjugate priors). The choice of which priors distributions will be conditionally conjugate depends on the likelihood function (i.e., the data generating function for our response variable). The priors below are conditionally conjugate priors for a one-predictor linear regression with gaussian likelihood. 
+
+#### Intercept: 
+
+Since x and y are centered around zero (i.e., mean of both = 0), we would expect a regression intercept close to zero. So we set our prior mean as 0. The prior precision should allow for some uncertainty. I chose tau= 1 (equivalent to variance = 1). Plotting the prior distributions helps understand how the hyperparameters shape expectations. Try playing around with the values of mu_0 and tau_0 in the code below to see how it affects the prior expectations. 
+
+$p(\beta_0 \mid \mu_0, \tau_0)
+= \mathcal{N}(\mu_0, \tau_0^{-1}), \;
+\mu_0 = 0, \;
+\tau_0 = 1$
+
+```{r Visualize prior for intercept}
+mu_0 = 0
+tau_0 = 0.5
+curve(dnorm(x, mean = mu_0, sd = 1/sqrt(tau_0)),
+      from = -1, to = 1, 
+      lwd=4,
+      ylab= expression(p(beta[0])),
+      xlab = expression(beta[0]), 
+      col ="#C81F1F",
+      main = "Prior distribution for the intercept")
+```
+
+
+
+#### Slope: 
+
+For this scenario, I want my prior to reflect the possibility that the relationship between x and y could be negative (slope < 0), positive (slope >0), or neutral (slope = 0). Here, this prior is modeled as a normal distribution with a mean of zero and precision giving a reasonable degree of uncertainty. I set the precision as 1 (equivalent to variance = 1). For greater uncertainty, I could set it even lower (e.g., precision of 1/3 means a variance of 3).      
+
+$p(\beta_1 \mid \mu_1, \tau_1)
+= \mathcal{N}(\mu_1, \tau_1^{-1}), \;
+\mu_0 = 0, \;
+\tau_0 = 1$
+
+```{r Visualize prior for slope }
+mu_1 = 0
+tau_1 = 0.5
+curve(dnorm(x, mean = mu_1, sd = 1/sqrt(tau_1)),
+      from = -1, to = 1, 
+      lwd=4,
+      ylab= expression(p(beta[1])),
+      xlab = expression(beta[1]), 
+      col ="#C81F1F",
+      main = "Prior distribution for the slope")
+```
+
+
+#### Precision: 
+
+Specifying a prior for the precision is a little less intuitive than for the slope and intercept. I know it has to be greater than zero because variance cannot be negative. So the prior distribution should not support any negative parameter values. I also know that since I standardized the data to units of standard deviation, it's reasonable to expect that the sample variance will be somewhere in the ballpark of 1. The gamma distribution happens to be the conditionally conjugate prior for the precision in a normal likelihood model. 
+This distribution has two parameters, Shape (*a* > 0) affects where peak probability density falls. Rate (*b* > 0) affects how sharply the probability density declines above the maximum. Try playing around with the values of a and b in the code below and see how it affects the prior distribution. 
+
+Note: I originally picked a = 2 and b = 0.5 because the shape matched my intuition. But it turned out to be a stronger prior than I expected. I settled on 0.001 for a and b because it's practically flat over values of the precision we might expect to see in standardized data.  
+
+$p(\tau) = \mathcal{Gamma}\!\left({a},\; {b}\right), \; a = 2, b = 0.5$
+
+```{r Visualize prior for precision}
+a = 0.001
+b = 0.001
+curve(dgamma(x,shape = a, rate = b), from = 0, to = 5,
+      ylab= expression(p(tau)),
+      xlab = expression(tau),
+      lwd=4, col ="#C81F1F",
+      main = "Prior distribution for the precision")
+
+```
+
+
+
+## Set up our Gibbs Sampler
+
+The Gibbs sampler estimates the **joint posterior probability distributions for all parameters** by sampling from the **full conditional posterior distributions of each parameter separately**. The full conditional posterior distribution is the data generating function for the parameter, conditional on the prior, the data, and the other parameters. Because we used conditionally conjugate priors, the conditional posteriors have the same distribution functions as our priors--i.e., normal distributions for slope and intercept and a gamma distribution for the precision. The conditional posteriors have updated parameters that are calculated from the observed data (x and y) and specified values for the other parameters. Check out this blog post for a nice explanation of how the math works: https://stmorse.github.io/journal/gibbs.html. That post shows how to code a similar Gibbs sampler in Python. 
+
+### First, set up functions to sample each parameter on its full conditional posterior distribution.
+
+#### Intercept:
+
+This is how the full conditional posterior distribution for the intercept looks in mathematical notation. 
+
+\[
+\beta_0 \mid \beta_1, \tau, \mathbf{y}, \mathbf{x} 
+\sim \mathcal{N} \Biggl(
+\frac{\tau_0 \mu_0 + \tau \sum_{i=1}^N (y_i - \beta_1 x_i)}{\tau_0 + \tau N}, \;
+\frac{1}{\tau_0 + \tau N}
+\Biggr)
+\]
+
+Here is this model translated into R code that samples the intercept on a normal distribution:
+
+```{r sample_b0 function}
+sample_b0 <- function(x,y, beta_1, tau, mu_0, tau_0){
+  N = length(x)
+  new_precision = tau_0 + tau * N 
+  new_mean = (tau_0 * mu_0 + tau * sum(y - beta_1 * x))/new_precision
+  ## samples one value of beta_0 on a normal distribution
+  b0samp <- rnorm(1,new_mean, 1/sqrt(new_precision))
+  return(b0samp)
+}
+```
+
+
+#### Slope:
+
+This is how the full conditional posterior distribution for the slope looks in mathematical notation. 
+
+\[
+\beta_1 \mid \beta_0, \tau, \mathbf{y}, \mathbf{x} 
+\sim \mathcal{N} \Biggl(
+\frac{\tau_1 \mu_1 + \tau \sum_{i=1}^N (y_i - \beta_0) x_i}{\tau_1 + \tau \sum_{i=1}^N x_i^2}, \;
+\frac{1}{\tau_1 + \tau \sum_{i=1}^N x_i^2}
+\Biggr)
+\]
+
+Here is this model translated into R code that samples the slope on a normal distribution:
+
+```{r sample_b1 function}
+sample_b1 <- function(x,y, beta_0, tau, mu_1, tau_1){
+  N = length(x)
+  new_precision = tau_1 + tau * sum(x^2) ## derived from Bayes rule with some math
+  new_mean = (tau_1 * mu_1 + tau * sum(x* (y - beta_0) ))/new_precision
+  ## samples beta_0 on a normal distribution
+  b1samp <- rnorm(1,new_mean, 1/sqrt(new_precision))
+  return(b1samp)
+}
+
+```
+
+#### Precision:
+
+This is how the full conditional posterior for the precision looks in mathematical notation. 
+
+\[
+\tau \mid \beta_0, \beta_1, \mathbf{y}, \mathbf{x} 
+\sim \text{Gamma} \Biggl(
+a + \frac{N}{2}, \;
+b + \frac{1}{2} \sum_{i=1}^N \bigl( y_i - (\beta_0 + \beta_1 x_i) \bigr)^2
+\Biggr)
+\]
+
+Here is this model translated into R code that samples the precision on a gamma distribution:
+
+```{r sample_tau function}
+sample_tau <- function(x, y, beta_0, beta_1, a, b){
+  N = length(x)
+  new_shape = a + N/2 # derived from Bayes rule--
+  # using log prbabilities to get a new gamma distirbution 
+  # from the joint probabilities defined in bayes rule. 
+  residual = y - (beta_0 + beta_1 * x) 
+  # the second part is the expected value of y--i.e., what's drawn on the regression line. 
+  # the residual is the difference between the data and expected value of the data. 
+  new_rate = b + sum(residual^2)/2
+  # rgamma uses shape and scale. scale = 1/beta
+  tausamp = rgamma(1,shape = new_shape, rate = new_rate) 
+  return(tausamp)
+}
+
+```
+
+### Then, combine sampling functions for full posterior distributions into an iterative Gibbs sampler.
+
+The Gibbs sampling algorithm is fairly straightforward. See if you can recognize these steps in the code below (this is part of exercise 1).
+
+1. Set a starting value for each parameter.
+
+2. Sample each parameter at a time using the observed x and y and the other parameters set at their most recent value--i.e., their starting value or the latest sampled value.
+
+3. Repeat for many iterations. 
+
+```{r gibbs function}
+# Function for a Gibbs sampler for a linear regression of a continuous response with one continuous predictor
+gibbs <- function(xvar, # predictor variable
+                  yvar, # response variable
+                  n_iter, # number of sampling iterations
+                  # specify initial parameter values (NULL is a placeholder)
+                  init = list(beta_0 = NULL, # intercept 
+                              beta_1 = NULL, # slope
+                              tau = NULL), # precision
+                  # specify hyperparameters for prior distributions
+                  hyper = list(mu_0 = NULL, tau_0 = NULL, # mean and precision for intercept
+                               mu_1 = NULL, tau_1 = NULL, # mean and precision for slope
+                               a = NULL, b = NULL) # shape and rate for tau 
+                    ){
+  b0 <- init$beta_0
+  b1 <- init$beta_1
+  tau <- init$tau
+  
+  pars <- matrix(nrow = n_iter+1, ncol = 3, dimnames = list(NULL, names(init)))
+  pars[1,] <- unlist(init)
+  for (i in 2:(n_iter + 1)){
+    b0 = sample_b0(x = xvar,
+                   y =  yvar, 
+                   beta_1 = b1,
+                   tau =  tau,
+                   mu_0 =  hyper$mu_0, 
+                   tau_0 = hyper$tau_0)
+    b1 = sample_b1(x =xvar,
+                   y=yvar,
+                   beta_0 = b0,
+                   tau=tau ,
+                   mu_1 = hyper$mu_1,
+                   tau_1 = hyper$tau_1)
+    tau = sample_tau(x = xvar, 
+                     y= yvar, 
+                     beta_0 = b0,
+                     beta_1 = b1,
+                     a = hyper$a,
+                     b = hyper$b)
+  
+    pars[i,] <- c(b0,b1,tau)  
+  }
+  return(pars)
+}
+
+```
+
+## Run our Gibbs sampler
+
+If you have run all the code until here, your R environment should contain vectors x and y and functions gibbs, sample_b0, sample_b1, and sample_tau. If it does not, go back and run all the code chunks above here. 
+
+```{r run gibbs}
+# pick initial values for the slope, intercept and precision:
+init <- list("beta_0" = 0, "beta_1" = 0, "tau" = 1)
+
+# set hyperparameters
+hyper <- list("mu_0" = 0,"tau_0" = 0.5, # beta_0
+              "mu_1" = 0, "tau_1" = 0.5, # beta_1
+              "a" = 0.001, "b" = 0.001 # tau
+              )
+n_runs = 1000
+
+posterior_sample  <- gibbs(xvar = obsdata$xobs, 
+                               yvar = obsdata$yobs,
+                               n_iter = n_runs, 
+                               init = init, 
+                               hyper = hyper)
+
+```
+
+## Visualize our posterior samples
+
+
+```{r trace plots}
+## convert matrix of posterior estimates to a long dataframe for ggplot
+posterior_df <- as.data.frame(posterior_sample) |>
+  mutate(iter = row_number() - 1) |>
+  pivot_longer(
+    cols = -iter,
+    names_to = "parameter",
+    values_to = "value"
+  )
+
+draw_traceplots <- function(posterior_df, truepars){
+ggplot(posterior_df, aes(x = iter, y = value)) +
+  geom_line(alpha = 0.6) +
+  geom_hline(
+    data = truepars,
+    aes(yintercept = true_value),
+    color = "red",
+    linetype = "dashed"
+  ) +
+  facet_wrap(~ parameter, scales = "free_y", ncol = 1) +
+  labs(
+    x = "Iteration",
+    y = "Posterior draw",
+    title = "Gibbs sampler trace plots"
+  ) +
+  theme_minimal()
+}
+
+print(draw_traceplots(posterior_df= posterior_df, truepars= truepars))
+
+```
+
+## Compare with frequentist estimates
+
+```{r trace plot with mle estimates}
+freqmod <- lm(yobs ~ xobs, data = obsdata)
+freqb0 <- coef(freqmod)[1]
+freqb1 <- coef(freqmod)[2]
+freqsigma <- summary(freqmod)$sigma
+freqtau <- 1/(freqsigma^2)
+
+freqpars <- data.frame(parameter = c("beta_0", "beta_1", "tau"),
+                       value = c(freqb0, freqb1, freqtau))
+
+print(draw_traceplots(posterior_df = posterior_df , truepars = truepars) +
+        geom_hline(data = freqpars, aes(yintercept = value),
+    color = "blue",
+    linetype = "dashed"
+  ))
+
+```
+
+
+
+## Exercises
+
+### 1. Decipher the code.
+
+The code for the Gibbs sampler function is deliberately provided without explanatory comments, aside from the documentation about the input arguments. Read through the code and add comments describing what each step is doing. In particular, see if you can recognize the overall outline of Gibbs sampling described above the code. Use your self-learning tools to investigate code you don't understand.
+
+### 2. Play with hyperparameters
+
+Go to the code chunks where we visualize prior distributions for the slope, intercept, and precision. Try adjusting the values for the hyperparameters and rerunning the code to see how it affects the shape of the distribution.
+
+
+### 3. Play with priors
+
+Try running the model with stronger priors (based on what you tested out in exercise 2). Compare the trace plot to the model you ran with weak priors. 
+
+### 4. Play with the sample size.
+
+Use the collect_data function above to generate a data set with a larger or smaller sample size. Then, run the gibbs sampler with the new dataset. Pay special attention to how this affects the posterior estimate for the precision. 
+
+### 5. Play with the "true" parameters.
+
+Use the collect_data function above to generate a dataset with different properties. For example, a lower value for the precision (tau) means greater scatter around the regression line. A lower value of the slope (beta_1) means a less steep regression line. Compare the trace plots to see how these changes affect the posterior estimates from your Gibbs sampler. 
+
+
+### 6. Play with the starting values.
+
+Try setting the starting values at something ridiculous and see what happens with your trace plots.
+
+
