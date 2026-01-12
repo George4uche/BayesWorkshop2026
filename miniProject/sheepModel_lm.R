@@ -13,7 +13,7 @@
 # Load packages--------
 # install any that you don't have
 library(agridat)
-library(lme4)
+#library(lme4)
 library(tidyverse)
 library(emmeans)
 
@@ -32,16 +32,24 @@ str(sheep) # What variables should be numeric?
 
 # are all the categorical variables factors?
 str(sheep)
+table(sheep$year)
 
 ## year should be a category.
 sheep$year <- factor(sheep$year)
+unique(sheep$year)
+unique(as.character(sheep$year))
+unique(as.numeric(sheep$year))
 levels(sheep$year) # shows levels of a category. 
 
 # standardize continuous variables
+
 sheep <- sheep %>% 
   mutate(std_birthwt = scale(birthwt, center = TRUE, scale=TRUE)[,1],
          std_weanwt = scale(weanwt, center = TRUE, scale=TRUE)[,1])
 
+
+hist(sheep$birthwt, bins = 20)
+hist(sheep$std_birthwt, bins = 20)
 
 # Build model-----------
 # response variable: birthwt
@@ -77,6 +85,14 @@ pgen <- sheep %>%
   ggforce::geom_sina(alpha= 0.5) 
 pgen
 
+sheep %>%
+  drop_na() %>%
+  ggplot() +
+  geom_density(aes(x = birthwt))+
+  facet_wrap(vars(gen))
+
+# empirical means
+tapply(sheep$birthwt, sheep$gen, mean)
 # interpretation:
 # FILL IN
 
@@ -111,11 +127,21 @@ pgensex <- sheep %>%
   geom_violin()+
   ggforce::geom_sina(alpha= 0.5) 
 pgensex
+# a violin plot provides
+# similar, but more information than a violin plot
+gensex_boxplot <- sheep %>%
+  drop_na() %>%
+  ggplot(aes(x = gen, y = birthwt, fill = sex)) +
+  geom_boxplot()+
+  ggforce::geom_sina(alpha= 0.5) 
+
+gensex_boxplot
 
 # genotype vs birth weight separated by year
 # gen:year interaction 
 pgenyear <- pgen + facet_wrap(vars(year))
 pgenyear
+table(sheep$gen, sheep$year)
 
 # genotype vs. birthweight separated by year and sex
 # gen:year:sex interaction
@@ -128,6 +154,7 @@ pgensexyear <-
   ggforce::geom_sina(data = sheep, aes(x = gen, y = birthwt, fill = sex), alpha= 0.5) +
   facet_wrap(vars(year))
 
+pgensexyear
 
 # Plotting the data reveals some consideration for 
 # modeling:
@@ -138,7 +165,11 @@ pgensexyear <-
 # by year
 table(sheep$gen, sheep$year)
 
-# solution: remove 1991
+# EXERCISE:----------
+## Task: make the same set of plots with weanwt 
+# instead of birth weight
+
+# remove 1991
 sheep_allyears <- sheep
 sheep <- sheep %>% filter(year != "91")
 
