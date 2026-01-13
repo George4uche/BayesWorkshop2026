@@ -177,7 +177,9 @@ sheep <- sheep %>% filter(year != "91")
 ## Basic lm model ----------
 #(using unstandardized data):
 ## Full model, all interaction terms
-model1 <- lm(birthwt ~  gen + sex + year + gen:sex + gen:year + sex:year + gen:sex:year, data = sheep)
+model1 <- lm(birthwt ~  gen + sex + year + 
+               gen:sex + gen:year + sex:year + 
+               gen:sex:year, data = sheep)
 
 summary(model1)
 
@@ -197,16 +199,20 @@ abline(a=0, b=1)
 # make a dataframe with the groups:
 groupdf <- sheep %>% group_by(gen, sex, year) %>%
   summarize()
+nrow(groupdf)
+demodf <- sheep %>% group_by(gen, sex, year)  %>%
+  mutate(meanbirthwt = mean(birthwt))
+nrow(demodf)
+head(demodf) %>% as.data.frame()
+
 head(groupdf)
+# what newdata means:
+newd <- data.frame(gen = "DD", sex = c("F","M"), year = "92")
+predict(model1, newdata = newd)
 
 groupdf$pred_birthwt <- predict(model1, newdata = groupdf,se.fit = FALSE)
 
-## Plot the data with predictions ---------
 
-pgroups <- ggplot() + 
-  geom_point(data = groupdf, aes(x = gen, y = pred_birthwt, color = year)) +
-  facet_wrap(vars(sex))
-pgroups
 
 ## interpret group effects--------
 # the emmeans package is useful for this
